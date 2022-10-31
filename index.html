@@ -1,0 +1,72 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Hierarchy</title>
+<body>
+    <p id="message" style="font-weight: bold">
+        Arraste o mouse no canvas para rotacionar a câmera. <br>
+        Use ← ↑ ↓ → para rotacionar o robô <br>
+    </p>
+
+    <canvas id="theCanvas" width="600" height="400">
+        Please use a browser that supports "canvas"
+    </canvas>
+
+    <p style="font-weight: bold">Ou também use qualquer comando da lista abaixo para mover as partes do robô.
+        <ul style="list-style: none; font-weight: bold  ">
+            <li>w, W - Ombro esquerdo</li>
+            <li>s, S - Ombro direito</li>
+            <li>a, A - Braço direito</li>
+            <li>d, D - Braço esquerdo</li>
+            <li>h, H - Mão esquerda</li>
+            <li>j, J - Mão direita</li>
+        </ul>
+        <ul style="list-style: none; font-weight: bold">
+            <li>o, O - Perna esquerda</li>
+            <li>k, K - Perna direita</li>
+            <li>n, N - Pé esquerdo</li>
+            <li>m, M - Pé direito</li>
+            <li>l, L - Cabeça</li>
+        </ul></p>
+
+
+
+    <script id="vertexLightingShader" type="x-shader/x-vertex">
+        uniform mat4 model;
+        uniform mat4 view;
+        uniform mat4 projection;
+        uniform vec4 u_Color;
+        uniform mat3 normalMatrix;
+        uniform vec4 lightPosition;
+
+        attribute vec4 a_Position;
+        attribute vec3 a_Normal;
+
+        varying vec4 color;
+        void main()
+        {
+          float ambientFactor = 0.3;
+          vec3 lightDirection = normalize((view * lightPosition - view * model * a_Position).xyz);
+          //vec3 normal = (view * model * vec4(a_Normal, 0.0)).xyz;
+          vec3 normal = normalize(normalMatrix * a_Normal);
+          float diffuseFactor = max(0.0, dot(lightDirection, normal));
+          color = u_Color * diffuseFactor + u_Color * ambientFactor;
+          color.a = 1.0;
+          gl_Position = projection * view * model * a_Position;
+        }
+    </script>
+
+    <script id="fragmentLightingShader" type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec4 color;
+        void main()
+        {
+          gl_FragColor = color;
+        }
+    </script>
+    <script src="webgl-utils.js"></script>
+    <script src="webgl-debug.js"></script>
+    <script src="cuon-utils.js"></script>
+    <script src="cuon-matrix.js"></script>
+    <script src="Hierarchy.js"></script>
+    <script src="simple-rotator.js"></script>
+</body></html>
